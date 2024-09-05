@@ -29,7 +29,14 @@ const RC: [u64; ROUNDS] = [
     0x8000000080008008u64,
 ];
 
-keccak_function!("`keccak-f[1600, 24]`", keccakf, ROUNDS, RC);
+cfg_if::cfg_if! {
+    if #[cfg(all(target_os = "ziskos", target_vendor = "polygon", target_arch = "riscv64"))] {
+        use crate::zisk;
+        use zisk::keccakf;
+    } else {
+        keccak_function!("`keccak-f[1600, 24]`", keccakf, ROUNDS, RC);
+    }
+}
 
 pub struct KeccakF;
 

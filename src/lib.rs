@@ -147,7 +147,15 @@ mod keccakf;
     feature = "tuple_hash",
     feature = "parallel_hash"
 ))]
-pub use keccakf::keccakf;
+
+cfg_if::cfg_if! {
+    if #[cfg(all(target_os = "ziskos", target_vendor = "polygon", target_arch = "riscv64"))] {
+        mod zisk;
+        pub use zisk::keccakf;
+    } else {
+        pub use keccakf::keccakf;
+    }
+}
 
 #[cfg(feature = "k12")]
 mod k12;
